@@ -19,7 +19,7 @@ export async function POST(
         }
 
         if(!prompt) {
-            return new NextResponse("Prompt are required", { status: 400 });
+            return new NextResponse("Prompt is required", { status: 400 });
         }
 
         const response = await replicate.run(
