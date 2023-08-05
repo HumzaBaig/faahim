@@ -37,7 +37,7 @@ export const checkApiLimit = async () => {
 
     const userApiLimit = await prismadb.userApiLimit.findUnique({
         where: {
-            userId:userId
+            userId: userId
         }
     });
 

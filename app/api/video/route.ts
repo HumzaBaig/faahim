@@ -2,6 +2,8 @@ import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import Replicate from "replicate";
 
+import { increaseApiLimit, checkApiLimit } from "@/lib/api-limits";
+
 const replicate = new Replicate({
     auth: process.env.REPLICATE_API_TOKEN!
 });
@@ -13,6 +15,7 @@ export async function POST(
         const { userId } = auth();
         const body = await req.json();
         const { prompt } = body;
+        const isFreeTrial = checkApiLimit();
 
         if(!userId) {
             return new NextResponse("Unauthorized", { status: 401 });
@@ -20,6 +23,10 @@ export async function POST(
 
         if(!prompt) {
             return new NextResponse("Prompt is required", { status: 400 });
+        }
+
+        if(!isFreeTrial) {
+            return new NextResponse("Free trial has expired.", { status: 403 });
         }
 
         const response = await replicate.run(
@@ -30,6 +37,8 @@ export async function POST(
                 }
             }
         );
+
+        await increaseApiLimit();
 
         return NextResponse.json(response);
 
