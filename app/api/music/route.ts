@@ -15,7 +15,7 @@ export async function POST(
         const { userId } = auth();
         const body = await req.json();
         const { prompt } = body;
-        const isFreeTrial = checkApiLimit();
+        const isFreeTrial = await checkApiLimit();
 
         if(!userId) {
             return new NextResponse("Unauthorized", { status: 401 });
