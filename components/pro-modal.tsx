@@ -4,6 +4,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -16,9 +17,11 @@ import {
   MessageSquare,
   Music,
   VideoIcon,
+  Zap,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 const tools = [
   {
@@ -85,6 +88,12 @@ export const ProModal = () => {
             ))}
           </DialogDescription>
         </DialogHeader>
+        <DialogFooter>
+          <Button size="lg" variant="premium" className="w-full">
+            Upgrade
+            <Zap className="w-4 h-4 ml-2 fill-white" />
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
