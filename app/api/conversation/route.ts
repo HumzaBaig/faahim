@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { Configuration, OpenAIApi } from "openai";
 
 import { increaseApiLimit, checkApiLimit } from "@/lib/api-limits";
+import { checkSubscription } from "@/lib/subscription";
 
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
@@ -18,6 +19,7 @@ export async function POST(
         const body = await req.json();
         const { messages } = body;
         const isFreeTrial = await checkApiLimit();
+        const isPro = await checkSubscription();
 
         if(!userId) {
             return new NextResponse("Unauthorized", { status: 401 });
@@ -31,7 +33,7 @@ export async function POST(
             return new NextResponse("Messages are required", { status: 400 });
         }
 
-        if(!isFreeTrial) {
+        if(!isFreeTrial && !isPro) {
             return new NextResponse("Free trial has expired.", { status: 403 });
         }
 
@@ -40,7 +42,9 @@ export async function POST(
             messages
         });
 
-        await increaseApiLimit();
+        if(!isPro){
+            await increaseApiLimit();
+        }
 
         return NextResponse.json(response.data.choices[0].message);
 
