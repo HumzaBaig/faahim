@@ -29,7 +29,7 @@ export async function GET() {
             return new NextResponse(JSON.stringify({ url: stripeSession.url }));
         }
 
-        const stripeSesion = await stripe.checkout.sessions.create({
+        const stripeSession = await stripe.checkout.sessions.create({
             success_url: settingsUrl,
             cancel_url: settingsUrl,
             payment_method_types: ["card"],
@@ -57,7 +57,7 @@ export async function GET() {
             },
         });
 
-        return new NextResponse(JSON.stringify({ url: stripeSesion }));
+        return new NextResponse(JSON.stringify({ url: stripeSession.url }));
         
     } catch (error) {
         console.log("[STRIPE_ERROR]", error);
